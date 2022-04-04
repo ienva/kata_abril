@@ -1,0 +1,6 @@
+{
+  "character": {
+    "maximum_live": 1000,
+    "minimum_live": 0
+  }
+}

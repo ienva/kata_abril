@@ -1,17 +1,28 @@
-# coding=utf-8
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print("Hi, {0}".format(name))  # Press ⌘F8 to toggle the breakpoint.
+class Character:
+    def __init__(self):
+        self.health = 1000
+        self.level = 1
+        self.alive = True
 
+    def received_damage(self, amount_of_damage):
+        self.health -= amount_of_damage
+        if self.health < 0:
+            self.health = 0
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+        self.alive = self.is_alive()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    def is_alive(self):
+        if self.health > 0:
+            return True
+        else:
+            return False
+
+    def heal(self, amount_of_heal):
+        if self.alive is False:
+            raise ValueError("Character already dead")
+        else:
+            self.health += amount_of_heal
+            if self.health > 1000:
+                self.health = 1000
