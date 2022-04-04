@@ -1,5 +1,6 @@
 import pytest
-from main import Character
+from main import Character, attack_between_two_characters,\
+    heal_between_chars
 
 
 class TestCharacter:
@@ -44,4 +45,55 @@ class TestCharacter:
         character.heal(300)
 
         assert character.health == 1000
+
+
+class TestInteractions:
+    def test_attack_between_two_characters(self):
+        attacker_char = Character(id='attacker')
+        attacked_char = Character(id='attacked')
+        attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
+
+        assert attacked_char.health == 900
+        assert attacker_char.health == 1000
+
+        attacker_char = Character(id='attacker')
+        attacked_char = Character(id='attacker')
+        attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
+
+        assert attacked_char.health == 1000
+        assert attacker_char.health == 1000
+
+    def test_attack_between_two_characters_with_dif_level(self):
+        attacker_char = Character(id='attacker')
+        attacked_char = Character(id='attacked')
+
+        attacker_char.level = 6
+        attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
+
+        assert attacked_char.health == 800
+
+        attacked_char.level = 11
+        attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
+        assert attacked_char.health == 750
+
+    def test_heal_between_two_characters(self):
+        healer_char = Character(id='healer')
+        healed_char = Character(id='healed')
+
+        healed_char.received_damage(100)
+
+        healer_char, healed_char = heal_between_chars(healer_char,
+                                                      healed_char,
+                                                      100)
+
+        assert healed_char.health == 900
+
+        healer_char, healed_char = heal_between_chars(healed_char,
+                                                      healed_char,
+                                                      100)
+
+        assert healed_char.health == 1000
+
+
+
 
