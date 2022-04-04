@@ -46,6 +46,37 @@ class TestCharacter:
 
         assert character.health == 1000
 
+    def test_join_faction(self):
+        character = Character()
+        character.join_factions('faction_A')
+
+        assert character.factions == set(['faction_A'])
+
+    def test_leave_faction(self):
+        character = Character()
+        character.factions = set(['faction_A'])
+
+        character.leave_faction('faction_B')
+
+        assert character.factions == set(['faction_A'])
+
+        character.leave_faction('faction_A')
+
+        assert character.factions == set()
+
+    def test_check_if_other_character_has_common_faction(self):
+        character_1 = Character()
+        character_2 = Character()
+        character_3 = Character()
+
+        character_1.factions = set(['faction_A'])
+        character_2.factions = set(['faction_B'])
+        character_3.factions = set(['faction_A', 'faction_B'])
+
+        assert character_1.check_if_other_character_has_common_faction(character_2) is False
+        assert character_1.check_if_other_character_has_common_faction(character_3) is True
+        assert character_3.check_if_other_character_has_common_faction(character_2) is True
+
 
 class TestInteractions:
     def test_attack_between_two_characters(self):
@@ -70,17 +101,17 @@ class TestInteractions:
         attacker_char.level = 6
         attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
 
-        assert attacked_char.health == 800
+        assert attacked_char.health == 850.0
 
         attacked_char.level = 11
         attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
-        assert attacked_char.health == 750
+        assert attacked_char.health == 800.0
 
     def test_heal_between_two_characters(self):
         healer_char = Character(id='healer')
         healed_char = Character(id='healed')
 
-        healed_char.received_damage(100)
+        healed_char.health = 900
 
         healer_char, healed_char = heal_between_chars(healer_char,
                                                       healed_char,
@@ -94,6 +125,40 @@ class TestInteractions:
 
         assert healed_char.health == 1000
 
+    def test_attack_with_factions(self):
+        attacker_char = Character(id='attacker')
+        attacked_char = Character(id='attacked')
+
+        attacker_char.factions = set(['faction_A'])
+
+        attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
+
+        assert attacked_char.health == 900
+
+        attacked_char.factions = set(['faction_A'])
+        attacker_char, attacked_char = attack_between_two_characters(attacker_char, attacked_char, 100)
+
+        assert attacked_char.health == 900
+
+    def test_heal_with_factions(self):
+        healer_char = Character(id='healer')
+        healed_char = Character(id='healed')
+
+        healed_char.health = 900
+        healer_char.factions = set(['faction_A'])
+
+        healer_char, healed_char = heal_between_chars(healer_char,
+                                                      healed_char,
+                                                      100)
+
+        assert healed_char.health == 900
+
+        healed_char.factions = set(['faction_A'])
+        healer_char, healed_char = heal_between_chars(healer_char,
+                                                      healed_char,
+                                                      100)
+
+        assert healed_char.health == 1000
 
 
 
