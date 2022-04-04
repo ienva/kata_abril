@@ -9,9 +9,8 @@ class Character:
         self.alive = True
 
     def received_damage(self, amount_of_damage):
-        self.health -= amount_of_damage
-        if self.health < self.min_health:
-            self.health = self.min_health
+        self.health = max(self.min_health,
+                          self.health - amount_of_damage)
 
         self.alive = self.is_alive()
 
@@ -22,6 +21,5 @@ class Character:
         if self.alive is False:
             raise ValueError("Character already dead")
         else:
-            self.health += amount_of_heal
-            if self.health > self.max_health:
-                self.health = self.max_health
+            self.health = min(self.max_health,
+                              self.health + amount_of_heal)
